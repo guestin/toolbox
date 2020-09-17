@@ -1,13 +1,12 @@
-package mod
+package mio
 
 import (
 	"github.com/guestin/mob/merrors"
-	"github.com/guestin/mob/mio"
 	"testing"
 )
 
 func TestByteBuffer(t *testing.T) {
-	buffer := mio.NewByteBuffer()
+	buffer := NewByteBuffer()
 	buffer.Write([]byte{0x01, 0x0e})
 	merrors.Assert(buffer.PeekInt8(1) == int8(0x0e), "bad")
 	merrors.Assert(buffer.ReadInt16() == 0x010e, "bad")
