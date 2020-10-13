@@ -19,7 +19,7 @@ type Error interface {
 
 type _stdError struct {
 	Code    int         `json:"code"`           // 错误码
-	Msg     string      `json:"msg"`            // 错误信息
+	Msg     string      `json:"message"`        // 错误信息
 	Data    interface{} `json:"data,omitempty"` // data
 	inherit error       // 包装的外部error
 }
