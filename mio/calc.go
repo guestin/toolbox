@@ -4,6 +4,8 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"io"
+	"os"
 	"strings"
 )
 
@@ -214,11 +216,7 @@ func CalcBCC(arr []uint8) uint8 {
 	return bcc
 }
 
-func GetMd5Hex(data []byte) string {
-	md5Bytes := md5.Sum(data)
-	return hex.EncodeToString(md5Bytes[:])
-}
-
 func Md5Hex(str string) string {
-	return GetMd5Hex([]byte(str))
+	md5Bytes := md5.Sum([]byte(str))
+	return hex.EncodeToString(md5Bytes[:])
 }
