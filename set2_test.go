@@ -7,13 +7,13 @@ import (
 )
 
 func TestSet(t *testing.T) {
-	s1 := NewSet()
+	x := []interface{}{1, 2, 4, 5}
+	s1 := NewSetFromSlice(x)
 	SetAdd(s1, 1, 2, 4, 5)
 	s2 := NewSet()
 	SetAdd(s2, 4, 5, 6, 7, 8)
-	for v := range s1.Intersect(s2).Iter() {
-		t.Log(v)
-	}
+	t.Log("s1 diff s2", s1.Difference(s2))
+	t.Log("s2 diff s1", s2.Difference(s1))
 }
 
 func TestURL(t *testing.T) {
