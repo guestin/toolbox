@@ -1,3 +1,5 @@
+//+build with_deprecated
+
 package mob
 
 import "encoding/json"
