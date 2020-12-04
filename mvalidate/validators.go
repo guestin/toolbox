@@ -1,15 +1,11 @@
 package mvalidate
 
 import (
-	"github.com/go-playground/locales"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/pkg/errors"
 	"strings"
 )
-
-// provider by eg: zhTranslator
-type RegisterTranslatorFunc func(v *validator.Validate, trans ut.Translator) (err error)
 
 type Validator interface {
 	//
@@ -61,17 +57,20 @@ func (this *_validator) Raw() *validator.Validate {
 	return this.raw
 }
 
-// newly create validator with translator
-func NewValidatorWithTranslator(regFunc RegisterTranslatorFunc, primary locales.Translator) (Validator, error) {
-	uniTranslator := ut.New(primary)
-	primaryUniTranslator, _ := uniTranslator.GetTranslator(primary.Locale())
+// newly create validator with specified localeName
+func NewValidator(localeName string) (Validator, error) {
+	transInfo, ok := kTranslateRegFuncMap[localeName]
+	if !ok {
+		return nil, errors.Errorf("locale translator:[%s] not registed", localeName)
+	}
 	validatorIns := validator.New()
-	err := regFunc(validatorIns, primaryUniTranslator)
+	uniTranslator := transInfo.BuildTranslator()
+	err := transInfo.RegisterTranslatorFunc(validatorIns, uniTranslator)
 	if err != nil {
 		return nil, err
 	}
 	return &_validator{
 		validatorIns,
-		primaryUniTranslator,
+		uniTranslator,
 	}, nil
 }
