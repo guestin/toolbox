@@ -2,8 +2,6 @@ package mvalidate
 
 import (
 	"fmt"
-	"github.com/go-playground/locales/zh"
-	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -19,7 +17,7 @@ func TestValidator0(t *testing.T) {
 		Name *string `validate:"required"`
 	}{v, v}
 
-	validator, err := NewValidatorWithTranslator(zhTranslations.RegisterDefaultTranslations, zh.New())
+	validator, err := NewValidator("zh")
 	assert.NoError(t, err)
 	v.Age = 4
 	err = validator.Struct(v)
