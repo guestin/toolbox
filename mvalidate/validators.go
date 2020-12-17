@@ -1,6 +1,7 @@
 package mvalidate
 
 import (
+	"fmt"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/pkg/errors"
@@ -18,6 +19,19 @@ type Validator interface {
 	Raw() *validator.Validate
 }
 
+type ValidateError []string
+
+func (this ValidateError) Error() string {
+	var sb strings.Builder
+	for idx, it := range this {
+		sb.WriteString(it)
+		if idx != len(this)-1 {
+			sb.WriteString(";\n")
+		}
+	}
+	return sb.String()
+}
+
 type _validator struct {
 	raw          *validator.Validate
 	utTranslator ut.Translator
@@ -31,14 +45,11 @@ func (this *_validator) Translate(err error) error {
 		return err
 	}
 	if validateErr, ok := err.(validator.ValidationErrors); ok {
-		var sb strings.Builder
+		ve := make(ValidateError, 0, len(validateErr))
 		for k, v := range validateErr.Translate(this.utTranslator) {
-			sb.WriteString(k)
-			sb.WriteString(":")
-			sb.WriteString(v)
-			sb.WriteString(";")
+			ve = append(ve, fmt.Sprintf("%s:%s", k, v))
 		}
-		return errors.New(sb.String())
+		return ve
 	}
 	return err
 }
