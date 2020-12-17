@@ -91,9 +91,13 @@ func ErrorWrap(err error, msg string) Error {
 }
 
 func ErrorWrapf0(err error, code int, format string, args ...interface{}) Error {
+	displayMsg := fmt.Sprintf(format, args...)
+	if err != nil {
+		displayMsg = fmt.Sprintf("%s:%s", displayMsg, err.Error())
+	}
 	return &_stdError{
 		Code:    code,
-		Msg:     fmt.Sprintf(format, args...),
+		Msg:     displayMsg,
 		inherit: err,
 	}
 }
