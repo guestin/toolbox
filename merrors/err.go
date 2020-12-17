@@ -66,22 +66,40 @@ func NewError() Error {
 	}
 }
 
-func newErrorWrapped(err error) *_stdError {
+func newErrorWrapped(err error, code int, msg string) *_stdError {
 	return &_stdError{
+		Code:    code,
+		Msg:     msg,
 		inherit: err,
 	}
 }
 
+func Errorf0(code int, format string, args ...interface{}) Error {
+	return ErrorWrapf0(nil, code, format, args...)
+}
+
 func Errorf(format string, args ...interface{}) Error {
-	return NewError().SetMsg(fmt.Sprintf(format, args...))
+	return Errorf0(-1, format, args...)
+}
+
+func ErrorWrap0(err error, code int, msg string) Error {
+	return ErrorWrapf0(err, code, msg)
 }
 
 func ErrorWrap(err error, msg string) Error {
-	return newErrorWrapped(err).SetMsg(fmt.Sprintf("%s: %s", msg, err.Error()))
+	return ErrorWrap0(err, -1, msg)
+}
+
+func ErrorWrapf0(err error, code int, format string, args ...interface{}) Error {
+	return &_stdError{
+		Code:    code,
+		Msg:     fmt.Sprintf(format, args...),
+		inherit: err,
+	}
 }
 
 func ErrorWrapf(err error, format string, args ...interface{}) Error {
-	return ErrorWrap(err, fmt.Sprintf(format, args...))
+	return ErrorWrapf0(err, -1, format, args...)
 }
 
 func (this *_stdError) SetMsg(msg string) Error {
