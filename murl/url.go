@@ -51,6 +51,7 @@ func MakeUrl(base string, opts ...UrlBuildOption) (*netUrl.URL, error) {
 		Queries: url.Query(),
 	}
 	for i := len(opts) - 1; i != -1; i-- {
+		// sadly golang net.url not support ordering
 		opts[i](&ubo)
 	}
 	if len(ubo.Paths) != 0 {
