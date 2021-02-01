@@ -50,9 +50,8 @@ func MakeUrl(base string, opts ...UrlBuildOption) (*netUrl.URL, error) {
 		Paths:   []string{},
 		Queries: url.Query(),
 	}
-	for i := len(opts) - 1; i != -1; i-- {
-		// sadly golang net.url not support ordering
-		opts[i](&ubo)
+	for _, op := range opts {
+		op(&ubo)
 	}
 	if len(ubo.Paths) != 0 {
 		pathBuilder := bytes.NewBufferString(url.Path)
