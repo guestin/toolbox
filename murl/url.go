@@ -50,8 +50,8 @@ func MakeUrl(base string, opts ...UrlBuildOption) (*netUrl.URL, error) {
 		Paths:   []string{},
 		Queries: url.Query(),
 	}
-	for _, op := range opts {
-		op(&ubo)
+	for i := len(opts) - 1; i != -1; i-- {
+		opts[i](&ubo)
 	}
 	if len(ubo.Paths) != 0 {
 		pathBuilder := bytes.NewBufferString(url.Path)
