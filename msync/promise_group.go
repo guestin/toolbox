@@ -1,7 +1,7 @@
 package msync
 
 import (
-	"github.com/pkg/errors"
+	"github.com/guestin/mob/merrors"
 	"sync"
 )
 
@@ -29,7 +29,7 @@ func (this *PromiseGroup) DonePromise(id PromiseId, err error, data interface{})
 	delete(this.hangs, id)
 }
 
-var ErrPromiseReplace = errors.New("this promise has been replace by another one!")
+var ErrPromiseReplace = merrors.ErrorWrap(nil, "this promise has been replace by another one!")
 
 func (this *PromiseGroup) AddPromise(id PromiseId, c Promise) {
 	defer this.lock.Unlock()

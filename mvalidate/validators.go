@@ -4,7 +4,7 @@ import (
 	"fmt"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	"github.com/pkg/errors"
+	"github.com/guestin/mob/merrors"
 	"strings"
 )
 
@@ -72,7 +72,7 @@ func (this *_validator) Raw() *validator.Validate {
 func NewValidator(localeName string) (Validator, error) {
 	transInfo, ok := kTranslateRegFuncMap[localeName]
 	if !ok {
-		return nil, errors.Errorf("locale translator:[%s] not registed", localeName)
+		return nil, merrors.ErrorWrapf(nil, "locale translator:[%s] not registed", localeName)
 	}
 	validatorIns := validator.New()
 	uniTranslator := transInfo.BuildTranslator()

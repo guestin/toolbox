@@ -2,7 +2,6 @@ package merrors
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"strings"
 )
 
@@ -136,7 +135,7 @@ func AssertError(err error, msg string) {
 	//defer func() {
 	//	Assert(false, output)
 	//}()
-	panic(errors.Wrapf(err, "%s :causedBy", msg))
+	panic(ErrorWrapf(err, "%s :causedBy", msg))
 }
 
 func Assert(cond bool, msg string) {
@@ -147,8 +146,7 @@ func Assert(cond bool, msg string) {
 	//	const abortCode = 6
 	//	os.Exit(abortCode)
 	//}()
-	e := errors.Errorf("assertFailed!,%s", msg)
-	panic(e)
+	panic(ErrorWrapf(nil, "assertFailed!,%s", msg))
 
 }
 

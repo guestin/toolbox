@@ -2,11 +2,11 @@ package msync
 
 import (
 	"context"
-	"github.com/pkg/errors"
+	"github.com/guestin/mob/merrors"
 	"sync/atomic"
 )
 
-var ErrFutureTimeout = errors.New("future wait timeout")
+var ErrFutureTimeout = merrors.ErrorWrap(nil, "future wait timeout")
 
 type Future interface {
 	Wait(ctx context.Context) error
