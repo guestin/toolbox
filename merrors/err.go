@@ -121,7 +121,7 @@ func (this *_stdError) SetData(data interface{}) Error {
 	return this
 }
 
-func IsStdError(e error) (err Error, ok bool) {
+func AsStdError(e error) (err Error, ok bool) {
 	if e == nil {
 		return nil, false
 	}
