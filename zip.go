@@ -130,6 +130,37 @@ func Zip(output io.Writer, fgs []*FileGroup) error {
 	return zipFilesDetails(zipWriter, fgs)
 }
 
+func unzipEntry(f *zip.File, output string) error {
+	info := f.FileInfo()
+	mode := info.Mode()
+	outputTarget := filepath.Join(output, f.Name)
+	if info.IsDir() {
+		err := os.MkdirAll(outputTarget, mode|0755)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	file, err := os.OpenFile(
+		outputTarget,
+		os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
+		mode|0766)
+	if err != nil {
+		return err
+	}
+	defer mio.CloseIgnoreErr(file)
+	rc, err := f.Open()
+	if err != nil {
+		return err
+	}
+	defer mio.CloseIgnoreErr(rc)
+	_, err = io.Copy(file, rc)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func UnZip(zipFilePath, output string) error {
 	zrc, err := zip.OpenReader(zipFilePath)
 	if err != nil {
@@ -137,31 +168,7 @@ func UnZip(zipFilePath, output string) error {
 	}
 	defer mio.CloseIgnoreErr(zrc)
 	for _, f := range zrc.File {
-		info := f.FileInfo()
-		mode := info.Mode()
-		outputTarget := filepath.Join(output, f.Name)
-		if info.IsDir() {
-			err := os.MkdirAll(outputTarget, mode|0755)
-			if err != nil {
-				return err
-			}
-			continue
-		}
-		file, err := os.OpenFile(
-			outputTarget,
-			os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
-			mode|0766)
-		if err != nil {
-			return err
-		}
-		rc, err := f.Open()
-		if err != nil {
-			return err
-		}
-		_, err = io.Copy(file, rc)
-		_ = rc.Close()
-		_ = file.Close()
-		if err != nil {
+		if err = unzipEntry(f, output); err != nil {
 			return err
 		}
 	}
