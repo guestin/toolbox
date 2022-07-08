@@ -21,6 +21,7 @@ func Md5HexFile(fileName string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer CloseIgnoreErr(file)
 	return Md5HexFile2(file)
 }
 
